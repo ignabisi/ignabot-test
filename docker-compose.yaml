@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: ./ignabot
+      dockerfile: Dockerfile
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - ./ignabot:/usr/src/app
+    ports:
+      - 80:8000
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0
+      - DATABASE_URL=postgres://postgres:postgres@web-db:5432/web_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/web_test
+
+  postgresql:
+    image: postgres
+    container_name: ignabot_postgresql
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: secret
+      POSTGRES_PASSWORD: secret
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+volumes:
+    postgres:
