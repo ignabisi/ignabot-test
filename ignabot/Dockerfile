@@ -1,10 +1,7 @@
-# pull official base image
 FROM python:3.11.2-slim-buster
 
-# set working directory
+# set working dir
 WORKDIR /usr/src/app
-
-# set environment variables
 
 # Prevents Python from writing pyc files to disc (prevents caching issues)
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -22,5 +19,5 @@ RUN pip install --no-cache --upgrade pip
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-# add app
+# add ignabot
 COPY . .
