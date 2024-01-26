@@ -5,7 +5,7 @@ services:
     build:
       context: ./ignabot
       dockerfile: Dockerfile
-    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --proxy-headers --reload --workers 1 --host 0.0.0.0 --port 8000
     env_file: [./.env ]
     volumes:
       - ./ignabot:/usr/src/app
