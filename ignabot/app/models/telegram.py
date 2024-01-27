@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
 
 class Message(BaseModel):
     message_id: int
-    from_: dict = None
+    from_: dict = Field(..., alias="from")
     chat: dict
     date: int
     text: str = None
