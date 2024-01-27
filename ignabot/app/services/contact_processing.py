@@ -2,6 +2,7 @@ from datetime import datetime
 
 import aiofiles
 from app.models.contact import Contact
+from app.models.telegram import TelegramFile
 from sqlmodel import select
 
 
@@ -93,10 +94,13 @@ class ContactManager:
                 contact_db.audios = list(contact_db.audios)
 
             audio_count = len(contact_db.audios)
+            file_name = file_name.split(".")[0]
             _filename = f"{file_name}_{audio_count}"
             contact_db.audios.append(_filename)
-            contact_db.audio_content = binary_file
-
+            telegram_file = TelegramFile()
+            telegram_file.file_id = _filename
+            telegram_file.content = binary_file
+            self.db_session.add(telegram_file)
         self.db_session.add(contact_db)
         self.db_session.commit()
         

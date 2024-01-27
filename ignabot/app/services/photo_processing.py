@@ -28,7 +28,6 @@ class PhotoProcessor:
         self.telegram_update = telegram_update
         self.file_name = file_name
         self.photo = telegram_update.message.photo[-1] if telegram_update.message.photo else None
-        self.status = None
     
     async def process(self) -> str:
         """
@@ -51,8 +50,8 @@ class PhotoProcessor:
             return "Sorry, I couldn't retrieve the photo. Could you please try sending it again?"
 
         if photo_response.status_code == 200:
-            await self.process_photo(photo_file)
-            if self.status == "photo":
+            status = await self.process_photo(photo_file)
+            if status == "photo":
                 logger.debug(f"Photo processed and saved as {self.file_name}")
                 return "Awesome! Your photo with a face has been processed successfully."
             else:
@@ -75,14 +74,13 @@ class PhotoProcessor:
             gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
             faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-
             if len(faces) > 0:
-                self.status = "photo"
                 for (x, y, w, h) in faces:
                     cv2.rectangle(img_array, (x, y), (x+w, y+h), (255, 0, 0), 2)
                 cv2.imwrite(self.file_name, img_array)
+                return "photo"
             else:
-                self.status = "failed"
+                return "failed"
 
 
 
