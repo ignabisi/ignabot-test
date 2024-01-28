@@ -84,18 +84,18 @@ class ContactManager:
         contact_db.updated_at = datetime.now()
         file_name = self.telegram.file_name
 
-        if file_name and file_name.endswith("wav"):
-            binary_file = await self.convert_file_to_binary(file_name)
+        if file_name:
             
-            if contact_db.audios is None:
-                contact_db.audios = []
-            else:
-                contact_db.audios = list(contact_db.audios)
-
-            audio_count = len(contact_db.audios)
+            binary_file = await self.convert_file_to_binary(file_name)
             file_name = file_name.split(".")[0]
-            _filename = f"{file_name}_{audio_count}"
-            contact_db.audios.append(_filename)
+            if "audio" in file_name:
+                contact_db.audios = [] if contact_db.audios is None else list(contact_db.audios)
+                audio_count = len(contact_db.audios)
+                _filename = f"{file_name}_{audio_count}"
+                contact_db.audios.append(_filename)
+            if "photo" in file_name:
+                _filename = file_name
+                
             telegram_file = TelegramFile()
             telegram_file.file_id = _filename
             telegram_file.content = binary_file
