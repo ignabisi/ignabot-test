@@ -1,8 +1,7 @@
 from datetime import datetime
 
 import aiofiles
-from app.models.contact import Contact
-from app.models.telegram import TelegramFile
+from app.models.contact import Contact, TelegramFile
 from sqlmodel import select
 
 

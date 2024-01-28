@@ -28,5 +28,6 @@ class TextProcessor:
         Returns:
         - str: A message explaining the bot's current capabilities.
         """
+        # TODO consider using AWS Lex v2
         message = "📝 Thank you for your message. Currently, my capabilities are limited to 🧐 recognizing faces by processing an image or photo 🖼️ and storing audio recordings 🎤. Please select one of these actions and send me a message to proceed."
         return message

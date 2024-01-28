@@ -1,6 +1,5 @@
 
 import os
-from enum import Enum
 
 import httpx
 

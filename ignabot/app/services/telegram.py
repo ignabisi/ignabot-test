@@ -24,7 +24,8 @@ class Telegram:
         - db_session: Database session for any required database operations.
         """
         self.telegram_update = telegram_update
-        self.file_name = None        
+        self.file_name = None
+                
     @property     
     def chat_id(self):
         return self.telegram_update.message.chat.get("id")
@@ -81,5 +82,4 @@ class Telegram:
             logger.error("Unsupported message type.")
             response = "Something happened. Please retry."
         return response
-    
     

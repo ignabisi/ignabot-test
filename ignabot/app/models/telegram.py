@@ -1,18 +1,21 @@
 from typing import List, Optional
 
-from fastapi import FastAPI, Request
-from pydantic import BaseModel, Field
-from sqlmodel import Column, Field, LargeBinary, SQLModel
+from pydantic import BaseModel, Field, validator
 
 
 class Message(BaseModel):
     message_id: int
-    from_: dict = Field(..., alias="from")
+    from_: dict = Field(...,alias='from')
     chat: dict
     date: int
-    text: str = None
-    photo: list = None
-    voice: dict = None
+    text: Optional[str] = None
+    photo: Optional[List] = None
+    voice: Optional[dict] = None
+    entities: Optional[List] = None
+    link_preview_options: Optional[dict] = None
+
+    class Config:
+        populate_by_name = True
 
 
 class TelegramUpdate(BaseModel):
@@ -20,10 +23,3 @@ class TelegramUpdate(BaseModel):
     message: Message = None
 
 
-class TelegramFile(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    file_id: str = Field(default=None)
-    content: List[bytes] = Field(default=None, sa_column=Column(LargeBinary))
-    
-    class Config:
-        arbitrary_types_allowed = True

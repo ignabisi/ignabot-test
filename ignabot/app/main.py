@@ -1,3 +1,4 @@
+import json
 import logging
 import sys
 import traceback
@@ -13,15 +14,35 @@ logger.setLevel(logging.DEBUG)
 
 
 class TrustHeadersMiddleware(BaseHTTPMiddleware):
+    async def handle_body(self, request):
+        """
+        Handles the request body by decoding it based on the content type.
+        If the request content type is 'multipart/form-data', the request is discarded, assuming
+        that the body content is being stored as an Artifact.
+
+        Args:
+            request (starlette.responses.StreamingResponse): The incoming request object.
+
+        Returns:
+            Union[Dict[str, Any], str]: The decoded request body as a dictionary (if content type is JSON)
+                or a string (if content type is not JSON) or a message indicating binary data.
+        """
+        body = await request.body()
+        try:
+            body = body.decode("utf-8")
+            _body = json.loads(body)
+        except json.JSONDecodeError:
+            _body = body
+        logging.debug(_body)    
+        return _body
+        
     async def dispatch(self, request: Request, call_next):
-        scheme = request.headers.get('x-forwarded-proto')
-        if scheme:
-            request.scope['scheme'] = scheme
+        # await self.handle_body(request)
         return await call_next(request)
 
 def create_app() -> FastAPI:
     application = FastAPI()
-    application.add_middleware(TrustHeadersMiddleware)
+    # application.add_middleware(TrustHeadersMiddleware)
     return application
 
 

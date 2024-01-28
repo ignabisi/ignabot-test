@@ -15,3 +15,11 @@ class Contact(SQLModel, table=True):
     
     class Config:
         arbitrary_types_allowed = True
+        
+class TelegramFile(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    file_id: str = Field(default=None)
+    content: List[bytes] = Field(default=None, sa_column=Column(LargeBinary))
+    
+    class Config:
+        arbitrary_types_allowed = True

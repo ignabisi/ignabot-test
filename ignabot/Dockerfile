@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Ensures that Python outputs are sent straight to terminal (keeps Docker logs clean)
 ENV PYTHONUNBUFFERED 1
 
-# install system dependencies
+
 RUN apt-get update \
     && apt-get -y install netcat gcc \
     && apt-get clean
